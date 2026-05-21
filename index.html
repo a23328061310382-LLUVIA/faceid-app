@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="FaceID App" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <title>FaceID App</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- PANTALLA 1: INICIO -->
+  <div id="screen-home" class="screen active">
+    <div class="home-bg"></div>
+    <div class="home-content">
+      <div class="logo-wrap">
+        <div class="logo-ring">
+          <svg viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="36" stroke="url(#grad1)" stroke-width="2.5"/>
+            <path d="M27 30 Q40 20 53 30 L53 45 Q40 60 27 45 Z" stroke="url(#grad1)" stroke-width="1.5" fill="none"/>
+            <circle cx="34" cy="36" r="3" fill="#00e5ff" opacity="0.8"/>
+            <circle cx="46" cy="36" r="3" fill="#00e5ff" opacity="0.8"/>
+            <path d="M34 46 Q40 51 46 46" stroke="#00e5ff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="grad1" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#00e5ff"/>
+                <stop offset="100%" stop-color="#7c3aed"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+      <h1 class="app-title">FACE<span>ID</span></h1>
+      <p class="app-sub">Reconocimiento facial en tiempo real</p>
+
+      <div class="home-steps">
+        <div class="step">
+          <span class="step-num">01</span>
+          <span class="step-text">Agrega fotos de las personas</span>
+        </div>
+        <div class="step">
+          <span class="step-num">02</span>
+          <span class="step-text">Abre la cámara</span>
+        </div>
+        <div class="step">
+          <span class="step-num">03</span>
+          <span class="step-text">Detección automática</span>
+        </div>
+      </div>
+
+      <button class="btn-main" onclick="goTo('screen-people')">
+        <span>Comenzar</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+
+      <!-- Botones extras en home -->
+      <div class="home-extra-btns">
+        <button class="btn-outline-sm" onclick="goTo('screen-history')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+          Historial
+        </button>
+        <button class="btn-outline-sm" onclick="goTo('screen-stats')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Estadísticas
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANTALLA 2: PERSONAS REGISTRADAS -->
+  <div id="screen-people" class="screen">
+    <div class="topbar">
+      <button class="btn-back" onclick="goTo('screen-home')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <h2>Personas</h2>
+      <button class="btn-icon" onclick="openAddPerson()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+
+    <div class="people-info" id="people-info">
+      <p>Agrega al menos una persona para comenzar</p>
+    </div>
+
+    <div class="people-grid" id="people-grid">
+      <!-- Cards dinámicas -->
+    </div>
+
+    <div class="bottom-bar" id="cam-btn-wrap" style="display:none">
+      <button class="btn-main btn-cam" onclick="goTo('screen-camera')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span>Abrir Cámara</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: AGREGAR PERSONA -->
+  <div id="modal-add" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-box">
+      <h3>Agregar Persona</h3>
+      <div class="input-wrap">
+        <input type="text" id="person-name" placeholder="Nombre de la persona" maxlength="30" />
+      </div>
+
+      <div class="photo-upload-area" onclick="document.getElementById('photo-input').click()">
+        <div class="upload-preview" id="upload-preview">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span>Toca para agregar foto(s)</span>
+          <small>Puedes seleccionar varias fotos de la misma persona</small>
+        </div>
+      </div>
+      <input type="file" id="photo-input" accept="image/*" multiple style="display:none" onchange="previewPhotos(event)" />
+
+      <div class="photo-thumbs" id="photo-thumbs"></div>
+
+      <div class="modal-actions">
+        <button class="btn-ghost" onclick="closeModalDirect()">Cancelar</button>
+        <button class="btn-main btn-sm" onclick="savePerson()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANTALLA 3: CÁMARA -->
+  <div id="screen-camera" class="screen">
+    <div class="cam-container">
+      <video id="video" autoplay muted playsinline></video>
+      <canvas id="overlay-canvas"></canvas>
+
+      <!-- HUD superior -->
+      <div class="cam-hud-top">
+        <button class="btn-back btn-cam-back" onclick="stopCamera()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <div class="cam-title">ESCÁNER ACTIVO</div>
+        <button class="btn-icon" onclick="flipCamera()" id="flip-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+        </button>
+      </div>
+
+      <!-- Resultado -->
+      <div class="result-panel" id="result-panel">
+        <div class="result-icon" id="result-icon">
+          <svg id="icon-scan" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <div class="result-text" id="result-text">Buscando rostro...</div>
+        <div class="result-sub" id="result-sub">Apunta la cámara al rostro</div>
+      </div>
+
+      <!-- Corner brackets -->
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+
+      <!-- Scan line -->
+      <div class="scan-line" id="scan-line"></div>
+    </div>
+
+    <!-- Estado de modelos -->
+    <div class="model-status" id="model-status">
+      <div class="loading-spinner"></div>
+      <span id="model-status-text">Cargando modelos de IA...</span>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PANTALLA 4: HISTORIAL DE DETECCIONES (NUEVA)
+  =========================================== -->
+  <div id="screen-history" class="screen">
+    <div class="topbar">
+      <button class="btn-back" onclick="goTo('screen-home')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <h2>Historial</h2>
+      <button class="btn-icon btn-danger-icon" onclick="confirmClearHistory()" title="Borrar historial">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      </button>
+    </div>
+
+    <!-- Barra de exportar -->
+    <div class="history-toolbar">
+      <button class="btn-export" onclick="exportHistory()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar .txt
+      </button>
+      <span class="history-count" id="history-count">0 registros</span>
+    </div>
+
+    <!-- Lista de historial -->
+    <div class="history-list" id="history-list">
+      <div class="empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(0,229,255,0.3)" stroke-width="1.2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+        <p>Aún no hay detecciones registradas</p>
+        <small>Abre la cámara para comenzar</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PANTALLA 5: ESTADÍSTICAS (NUEVA)
+  =========================================== -->
+  <div id="screen-stats" class="screen">
+    <div class="topbar">
+      <button class="btn-back" onclick="goTo('screen-home')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <h2>Estadísticas</h2>
+      <div style="width:40px"></div>
+    </div>
+
+    <!-- Tarjetas resumen -->
+    <div class="stats-summary" id="stats-summary">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-total">0</div>
+        <div class="stat-label">Detecciones totales</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-known">0</div>
+        <div class="stat-label">Personas reconocidas</div>
+      </div>
+      <div class="stat-card stat-card-red">
+        <div class="stat-value" id="stat-unknown">0</div>
+        <div class="stat-label">Desconocidos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-people">0</div>
+        <div class="stat-label">Personas registradas</div>
+      </div>
+    </div>
+
+    <!-- Top detecciones -->
+    <div class="stats-section-title">Top detecciones por persona</div>
+    <div class="stats-bars" id="stats-bars">
+      <div class="empty-state" style="padding: 24px 0;">
+        <p>Sin datos aún</p>
+      </div>
+    </div>
+
+    <!-- Actividad reciente por hora -->
+    <div class="stats-section-title">Actividad por hora del día</div>
+    <div class="hour-chart" id="hour-chart"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
